@@ -1,4 +1,5 @@
-from django.db import models
+from django.db import models, IntegrityError
+from django.db import transaction
 
 
 class Book(models.Model):
@@ -14,6 +15,14 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.author}"
+
+    @transaction.atomic
+    def rent_book(self):
+        if self.inventory > 0:
+            self.inventory -= 1
+            self.save()
+        else:
+            raise IntegrityError("No books available!")
 
     class Meta:
         unique_together = ("title", "author")
