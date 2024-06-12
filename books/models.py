@@ -16,13 +16,17 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author}"
 
-    @transaction.atomic
-    def rent_book(self):
-        if self.inventory > 0:
+    def rent_book(self, error):
+        if self.inventory >= 1:
             self.inventory -= 1
             self.save()
         else:
-            raise IntegrityError("No books available!")
+            raise error("No books available!")
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            self.rent_book(IntegrityError)
+            super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ("title", "author")
