@@ -1,5 +1,4 @@
-from django.db import models, IntegrityError
-from django.db import transaction
+from django.db import models
 
 
 class Book(models.Model):
