@@ -4,6 +4,10 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
 from borrowings.models import Borrowing
+from books.serializers import (
+    BookListSerializer,
+    BookSerializer
+)
 from books.models import Book
 
 
@@ -26,3 +30,29 @@ class BorrowingSerializer(serializers.ModelSerializer):
             borrowing = Borrowing.objects.create(**validated_data)
 
             return borrowing
+
+    # def update(self, instance, validated_data):
+
+
+class BorrowingListSerializer(serializers.ModelSerializer):
+    book = BookListSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Borrowing
+        fields = (
+            "borrow_date", "expected_return_date",
+            "actual_return_date", "book",
+            "is_active", "user",
+        )
+
+
+class BorrowingDetailSerializer(BorrowingListSerializer):
+    book = BookSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Borrowing
+        fields = (
+            "borrow_date", "expected_return_date",
+            "actual_return_date", "book",
+            "is_active", "user",
+        )

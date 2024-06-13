@@ -1,4 +1,5 @@
-from django.db import models, transaction
+from django.core.exceptions import ValidationError
+from django.db import models, transaction, IntegrityError
 from django.contrib.auth import get_user_model
 
 from books.models import Book
@@ -11,13 +12,25 @@ class Borrowing(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
+    @property
+    def is_active(self):
+        return self.actual_return_date is None
+
     def __str__(self):
         return f"Borrowing: {self.book_id} by {self.user}"
 
+    def clean(self):
+        if (
+            self.actual_return_date is not None
+            and self.expected_return_date <= self.borrow_date
+        ):
+            raise ValidationError("Expected return date must be after borrow date.")
+
     def save(self, *args, **kwargs):
         with transaction.atomic():
-            self.book.rent_book()
-            return super().save(*args, **kwargs)
+            self.clean()
+            self.rent_book(IntegrityError)
+            super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["-borrow_date"]

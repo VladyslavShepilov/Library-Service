@@ -22,6 +22,10 @@ class Book(models.Model):
         else:
             raise error("No books available!")
 
+    def return_book(self):
+        self.inventory += 1
+        self.save()
+
     class Meta:
         unique_together = ("title", "author")
         ordering = ["-daily_fee"]
