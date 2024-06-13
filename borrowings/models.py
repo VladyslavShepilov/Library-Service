@@ -17,7 +17,7 @@ class Borrowing(models.Model):
         return self.actual_return_date is None
 
     def __str__(self):
-        return f"Borrowing: {self.book_id} by {self.user}"
+        return f"{self.book.title} by {self.user.email}"
 
     def clean(self):
         if (
@@ -29,7 +29,6 @@ class Borrowing(models.Model):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             self.clean()
-            self.rent_book(IntegrityError)
             super().save(*args, **kwargs)
 
     class Meta:

@@ -27,11 +27,10 @@ class BorrowingSerializer(serializers.ModelSerializer):
             book = get_object_or_404(Book, book_id)
 
             book.rent_book(ValidationError)
+
             borrowing = Borrowing.objects.create(**validated_data)
 
             return borrowing
-
-    # def update(self, instance, validated_data):
 
 
 class BorrowingListSerializer(serializers.ModelSerializer):
