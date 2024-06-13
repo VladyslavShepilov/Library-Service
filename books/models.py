@@ -15,6 +15,17 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author}"
 
+    def rent_book(self, error):
+        if self.inventory >= 1:
+            self.inventory -= 1
+            self.save()
+        else:
+            raise error("No books available!")
+
+    def return_book(self):
+        self.inventory += 1
+        self.save()
+
     class Meta:
         unique_together = ("title", "author")
         ordering = ["-daily_fee"]
