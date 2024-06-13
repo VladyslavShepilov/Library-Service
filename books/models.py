@@ -23,11 +23,6 @@ class Book(models.Model):
         else:
             raise error("No books available!")
 
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            self.rent_book(IntegrityError)
-            super().save(*args, **kwargs)
-
     class Meta:
         unique_together = ("title", "author")
         ordering = ["-daily_fee"]
