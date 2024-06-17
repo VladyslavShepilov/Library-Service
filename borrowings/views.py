@@ -37,12 +37,8 @@ class BorrowingViewSet(
 
         return queryset
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -75,3 +71,4 @@ class BorrowingViewSet(
 
         serializer = BorrowingDetailSerializer(borrowing)
         return Response(serializer.data, status=status.HTTP_200_OK)
+

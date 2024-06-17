@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.db import models, transaction, IntegrityError
 from django.contrib.auth import get_user_model
 
@@ -19,12 +18,20 @@ class Borrowing(models.Model):
     def __str__(self):
         return f"{self.book.title} by {self.user.email}"
 
+    @staticmethod
+    def validate_creation_time(borrow_date, expected_return_date, actual_return_date, error):
+        if expected_return_date < borrow_date:
+            raise error("Return date can't be less than borrow date!")
+        if actual_return_date and actual_return_date < borrow_date:
+            raise error("Actual return date can't be less than borrow date!")
+
     def clean(self):
-        if (
-            self.actual_return_date is not None
-            and self.expected_return_date <= self.borrow_date
-        ):
-            raise ValidationError("Expected return date must be after borrow date.")
+        self.validate_creation_time(
+            self.borrow_date,
+            self.expected_return_date,
+            self.actual_return_date,
+            IntegrityError
+        )
 
     def save(self, *args, **kwargs):
         with transaction.atomic():

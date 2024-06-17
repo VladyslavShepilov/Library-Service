@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
+from datetime import datetime
 
 from borrowings.models import Borrowing
 from books.serializers import (
@@ -18,6 +19,15 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "expected_return_date", "actual_return_date",
             "book", "user"
         )
+
+    def validate(self, attrs):
+        data = super(BorrowingSerializer, self).validate(attrs=attrs)
+        attrs["borrow_date"] = datetime.now().date()
+        Borrowing.validate_creation_time(
+            attrs["borrow_date"], attrs["expected_return_date"], attrs["actual_return_date"],
+            ValidationError
+        )
+        return data
 
     def create(self, validated_data):
         try:
