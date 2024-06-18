@@ -1,9 +1,6 @@
 from rest_framework import viewsets
 
-from books.serializers import (
-    BookSerializer,
-    BookListSerializer
-)
+from books.serializers import BookSerializer, BookListSerializer
 
 from books.models import Book
 
