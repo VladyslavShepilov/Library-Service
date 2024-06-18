@@ -26,6 +26,9 @@ class BorrowingViewSet(
         is_active = self.request.query_params.get("is_active")
         queryset = self.queryset
 
+        if self.serializer_class == BorrowingSerializer:
+            queryset = queryset.select_related("user")
+
         if user_id:
             queryset = queryset.filter(user=user_id)
 
