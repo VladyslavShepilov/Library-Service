@@ -136,7 +136,7 @@ CELERY_TIMEZONE = "UTC"
 CELERY_BEAT_SCHEDULE = {
     "check-overdue-borrowings": {
         "task": "notifications.tasks.check_overdue_borrowings_and_notify",
-        "schedule": timedelta(seconds=5),
+        "schedule": timedelta(days=1),
         "args": (),
     },
 }
