@@ -13,7 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-u@4uw9ut6*9h504$_jyz_yy$!mcfj#s!r59d2j6jm9ezfja*ig")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-u@4uw9ut6*9h504$_jyz_yy$!mcfj#s!r59d2j6jm9ezfja*ig"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -143,3 +145,5 @@ CELERY_BEAT_SCHEDULE = {
         "args": (),
     },
 }
+
+PRIVATE_PAYMENT_KEY = os.getenv("PRIVATE_PAYMENT_KEY")
