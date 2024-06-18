@@ -8,6 +8,7 @@ from books.serializers import (
     BookListSerializer,
     BookSerializer
 )
+from notifications.telegram import send_telegram_message
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -36,6 +37,11 @@ class BorrowingSerializer(serializers.ModelSerializer):
                 book.rent_book(ValidationError)
 
                 borrowing = Borrowing.objects.create(book=book, **validated_data)
+
+                message = (
+                    f"Book {borrowing}. Expected return date {validated_data['expected_return_date']}."
+                )
+                send_telegram_message(message)
 
                 return borrowing
         except ValidationError as e:
