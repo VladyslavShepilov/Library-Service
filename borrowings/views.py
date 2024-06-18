@@ -22,9 +22,13 @@ class BorrowingViewSet(
     serializer_class = BorrowingSerializer
 
     def get_queryset(self):
+        queryset = self.queryset
+
+        if self.request.user.is_staff:
+            queryset = self.queryset.filter(user=self.request.user)
+
         user_id = self.request.query_params.get("user_id")
         is_active = self.request.query_params.get("is_active")
-        queryset = self.queryset
 
         if self.serializer_class == BorrowingSerializer:
             queryset = queryset.select_related("user")
