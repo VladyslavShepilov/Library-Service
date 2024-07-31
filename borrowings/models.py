@@ -34,9 +34,8 @@ class Borrowing(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        with transaction.atomic():
-            self.clean()
-            super().save(*args, **kwargs)
+        self.full_clean()
+        super(Borrowing, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ["-borrow_date"]

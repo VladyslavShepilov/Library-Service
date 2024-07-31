@@ -78,4 +78,3 @@ class BorrowingViewSet(
 
         serializer = BorrowingDetailSerializer(borrowing)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
